@@ -15,7 +15,9 @@ export default function Login() {
   return (
     <>
       Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
+      <button onClick={() => signIn("github", { redirectTo: "/" })}>
+        Sign in
+      </button>
     </>
   )
 }
