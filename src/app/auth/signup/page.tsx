@@ -2,29 +2,31 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { Button, Input } from "@material-tailwind/react"
+import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid"
 
 export default function SignupPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  })
+  const [passwordShown, setPasswordShown] = useState(false)
+  const togglePasswordVisibility = () => setPasswordShown((cur) => !cur)
+
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError(null)
+
+    const formData = new FormData(e.currentTarget)
 
     try {
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.get("name"),
+          email: formData.get("email"),
+          password: formData.get("password"),
+        }),
       })
 
       if (!response.ok) {
@@ -46,56 +48,61 @@ export default function SignupPage() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm p-4 border rounded-md shadow-md"
       >
-        <h1 className="mb-4 text-xl font-bold">Sign Up</h1>
+        <h1 className="text-3xl mb-6">Signup</h1>
         {error && <p className="mb-2 text-red-500">{error}</p>}
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-medium">
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
+
+        <div className="mb-6">
+          <Input
             required
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium">
-            Email
-          </label>
-          <input
-            type="email"
+            crossOrigin={"anonymous"}
             id="email"
+            color="gray"
+            size="lg"
+            type="text"
+            name="name"
+            label="Name"
+            className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
+          />
+        </div>
+
+        <div className="mb-6">
+          <Input
+            required
+            crossOrigin={"anonymous"}
+            id="email"
+            color="gray"
+            size="lg"
+            type="email"
             name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-            required
+            label="Email"
+            className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
           />
         </div>
-        <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
+
+        <div className="mb-6">
+          <Input
+            required
+            crossOrigin={"anonymous"}
+            size="lg"
+            label="password"
             name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-            required
+            className="w-full placeholder:opacity-100 focus:border-t-primary border-t-blue-gray-200"
+            type={passwordShown ? "text" : "password"}
+            icon={
+              <i onClick={togglePasswordVisibility}>
+                {passwordShown ? (
+                  <EyeIcon className="h-5 w-5" />
+                ) : (
+                  <EyeSlashIcon className="h-5 w-5" />
+                )}
+              </i>
+            }
           />
         </div>
-        <button
-          type="submit"
-          className="w-full p-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
-        >
-          Sign Up
-        </button>
+
+        <Button type="submit" color="gray" size="lg" className="mt-6" fullWidth>
+          Sign up
+        </Button>
       </form>
     </div>
   )

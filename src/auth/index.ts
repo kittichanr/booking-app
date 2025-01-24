@@ -34,6 +34,7 @@ const authOptions: NextAuthConfig = {
           let user = null
 
           const { email, password } = await signInSchema.parseAsync(credentials)
+          console.log("email", email, password)
 
           user = await db.user.findUnique({
             where: {
@@ -48,6 +49,8 @@ const authOptions: NextAuthConfig = {
           }
           throw new Error("Invalid email or password")
         } catch (error) {
+          console.log("asd", error)
+
           if (error instanceof ZodError) {
             return null
           }

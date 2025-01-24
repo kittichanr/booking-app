@@ -1,5 +1,5 @@
 import Image from "next/image"
-import Logout from "@/components/Logout"
+import Logout from "@/components/auth/Logout"
 import { auth } from "@/auth"
 
 const HomePage = async () => {
