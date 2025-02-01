@@ -35,7 +35,7 @@ export default async function RootLayout({
       >
         <SessionProvider session={session}>
           <Nav />
-          {children}
+          <div className="flex flex-col m-4">{children}</div>
         </SessionProvider>
       </body>
     </html>

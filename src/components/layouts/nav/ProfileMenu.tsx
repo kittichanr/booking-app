@@ -25,7 +25,7 @@ const profileMenuItems = [
   {
     label: "Your Booking",
     icon: BookmarkIcon,
-    path: "/booking",
+    path: "/history",
   },
   {
     label: "Sign Out",
