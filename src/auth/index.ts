@@ -1,13 +1,14 @@
-import { db } from "@/server/db"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import NextAuth, { NextAuthConfig, User } from "next-auth"
 import GitHub from "next-auth/providers/github"
 import Credentials from "next-auth/providers/credentials"
-import { signInSchema } from "@/lib/zod"
 import { ZodError } from "zod"
 import bcrypt from "bcrypt"
 import { Adapter } from "next-auth/adapters"
 import { Role } from "@prisma/client"
+
+import { signInSchema } from "@/lib/zod"
+import { db } from "@/server/db"
 
 export const BASE_PATH = "/api/auth"
 
@@ -34,7 +35,6 @@ const authOptions: NextAuthConfig = {
           let user = null
 
           const { email, password } = await signInSchema.parseAsync(credentials)
-          console.log("email", email, password)
 
           user = await db.user.findUnique({
             where: {
@@ -49,8 +49,6 @@ const authOptions: NextAuthConfig = {
           }
           throw new Error("Invalid email or password")
         } catch (error) {
-          console.log("asd", error)
-
           if (error instanceof ZodError) {
             return null
           }

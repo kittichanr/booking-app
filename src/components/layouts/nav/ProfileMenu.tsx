@@ -13,23 +13,30 @@ import {
 import {
   BookmarkIcon,
   ChevronDownIcon,
+  PencilIcon,
   PowerIcon,
   UserIcon,
 } from "@heroicons/react/24/solid"
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
-import { doLogout } from "@/app/actions"
-
 const profileMenuItems = [
+  {
+    label: "Admin",
+    icon: PencilIcon,
+    path: "/admin",
+    isAdmin: true,
+  },
   {
     label: "Your Booking",
     icon: BookmarkIcon,
     path: "/history",
+    isAdmin: false,
   },
   {
     label: "Sign Out",
     icon: PowerIcon,
+    isAdmin: false,
   },
 ]
 
@@ -38,9 +45,9 @@ export function ProfileMenu() {
 
   const router = useRouter()
 
-  const onClickMenu = (isSignOut: boolean, path?: string) => {
+  const onClickMenu = async (isSignOut: boolean, path?: string) => {
     if (isSignOut) {
-      doLogout()
+      await signOut({ redirectTo: "/auth/signin" })
     } else {
       if (path) {
         router.push(path)
@@ -85,9 +92,14 @@ export function ProfileMenu() {
         </Button>
       </MenuHandler>
       <MenuList className="p-1">
-        {profileMenuItems.map(({ label, icon, path }, key) => {
+        {profileMenuItems.map(({ label, icon, path, isAdmin }, key) => {
           // COMMENT: isLastItem is mean signout button
           const isLastItem = key === profileMenuItems.length - 1
+
+          if (session?.user.role !== "ADMIN" && isAdmin) {
+            return null
+          }
+
           return (
             <MenuItem
               key={label}

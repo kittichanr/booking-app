@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import { SessionProvider } from "next-auth/react"
 
-import { auth } from "@/auth"
 import { Nav } from "@/components/layouts/nav/Nav"
 
 const geistSans = Geist({
@@ -26,14 +25,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const session = await auth()
-
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SessionProvider session={session}>
+        <SessionProvider>
           <Nav />
           <div className="flex flex-col m-4">{children}</div>
         </SessionProvider>

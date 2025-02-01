@@ -4,11 +4,14 @@ import { Typography, Input, Button } from "@material-tailwind/react"
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/24/solid"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { doCredentialLogin } from "@/app/actions"
 import Link from "next/link"
+import { useSession } from "next-auth/react"
+
+import { doCredentialLogin } from "@/app/actions"
 import SocialLogins from "@/components/auth/SocialLogins"
 
 export default function SignInPage() {
+  const { update } = useSession()
   const [passwordShown, setPasswordShown] = useState(false)
   const togglePasswordVisibility = () => setPasswordShown((cur) => !cur)
 
@@ -26,6 +29,7 @@ export default function SignInPage() {
         console.error(response.error)
         setError(response.error.message)
       } else {
+        update()
         router.push("/")
       }
     } catch (e) {
